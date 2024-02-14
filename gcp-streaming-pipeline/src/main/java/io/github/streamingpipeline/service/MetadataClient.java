@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.github.streamingpipeline.model.ErrorLog;
 import io.github.streamingpipeline.model.UberImportFileLog;
-import io.github.streamingpipeline.model.Institution;
+import io.github.streamingpipeline.model.UberCustomer;
 import io.github.streamingpipeline.model.UberRideStream;
 import io.github.streamingpipeline.secretmanager.GCPSecretManager;
 import org.springframework.core.ParameterizedTypeReference;
@@ -155,7 +155,7 @@ public class MetadataClient {
 	 * Institution configuration client
 	 */
 	
-	public List<Institution> getRunStreamInstitutions(String runstreamId) {
+	public List<UberCustomer> getRunStreamInstitutions(String runstreamId) {
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(ROOT_URL + RUNSTREAM_INSTITUTIONS_URL)
 				 .queryParam("runstreamName", runstreamId);
 
@@ -163,16 +163,16 @@ public class MetadataClient {
 		headers.set(HEADER_AUTHORIZATION, gcpSecretManager.fetchSecret());
 		HttpEntity request = new HttpEntity(headers);
 
-		ResponseEntity<List<Institution>> response = restTemplate.exchange(
+		ResponseEntity<List<UberCustomer>> response = restTemplate.exchange(
 				uriBuilder.toUriString(),
 				HttpMethod.GET,
 				request,
-				new ParameterizedTypeReference<List<Institution>>() {}
+				new ParameterizedTypeReference<List<UberCustomer>>() {}
 		);
 		return response.getBody();
 	}
 	
-	public Optional<Institution> getInstitutions(String institutionId) {
+	public Optional<UberCustomer> getInstitutions(String institutionId) {
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(ROOT_URL + TS_INSTITUTIONS_URL)
 				 .queryParam("profile", institutionId);
 
@@ -180,11 +180,11 @@ public class MetadataClient {
 		headers.set(HEADER_AUTHORIZATION, gcpSecretManager.fetchSecret());
 		HttpEntity request = new HttpEntity(headers);
 
-		ResponseEntity<Institution> response = restTemplate.exchange(
+		ResponseEntity<UberCustomer> response = restTemplate.exchange(
 				uriBuilder.toUriString(),
 				HttpMethod.GET,
 				request,
-				Institution.class
+				UberCustomer.class
 		);
 		return Optional.ofNullable(response.getBody());
 	}

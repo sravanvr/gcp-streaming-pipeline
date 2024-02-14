@@ -8,7 +8,7 @@ import io.github.streamingpipeline.exception.ApplicationException;
 import io.github.streamingpipeline.model.UberAccountDetail;
 import io.github.streamingpipeline.model.EOFMessage;
 import io.github.streamingpipeline.model.ErrorLog;
-import io.github.streamingpipeline.model.Institution;
+import io.github.streamingpipeline.model.UberCustomer;
 import io.github.streamingpipeline.utils.ErrorCode;
 import io.github.streamingpipeline.utils.SeverityLevel;
 import org.apache.commons.codec.DecoderException;
@@ -82,9 +82,9 @@ public class ImportManager {
 	 * @return Institution configuration
 	 * @throws UberAccountsPipelineException
 	 */
-	public Institution getInstitutionConfig(UberAccountDetail accountDetail) throws UberAccountsPipelineException {
+	public UberCustomer getInstitutionConfig(UberAccountDetail accountDetail) throws UberAccountsPipelineException {
 		String institutionId = getInstitutionId(accountDetail);
-		Optional<Institution> institution = Optional.empty();
+		Optional<UberCustomer> institution = Optional.empty();
 		try {
 			institution = uberConfigsClient.getInstitution(institutionId);
 		} catch (NullPointerException npe) {

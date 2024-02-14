@@ -1,7 +1,7 @@
 package io.github.streamingpipeline.rowkey;
 
 import io.github.streamingpipeline.model.UberAccount;
-import io.github.streamingpipeline.model.Institution;
+import io.github.streamingpipeline.model.UberCustomer;
 
 /***
  *
@@ -16,7 +16,7 @@ public class UberAccountLookupRowKey {
      * @param institution
      * @return
      */
-	public String buildAccountLookupRowKey(UberAccount account, Institution institution) {
+	public String buildAccountLookupRowKey(UberAccount account, UberCustomer institution) {
         return account.getInstitutionId() + "#ai#";
     }
 }

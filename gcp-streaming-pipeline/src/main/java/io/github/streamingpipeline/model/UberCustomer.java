@@ -14,7 +14,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class Institution {
+public class UberCustomer {
 
 	@JsonProperty("institutionId")
 	private String institutionId;

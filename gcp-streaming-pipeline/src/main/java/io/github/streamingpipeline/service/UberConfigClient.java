@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import io.github.streamingpipeline.model.Institution;
+import io.github.streamingpipeline.model.UberCustomer;
 
 /**
  * 
@@ -17,10 +17,10 @@ public class UberConfigClient {
 	@Named ("uberConfigClientImpl")
     UberConfig uberConfigClientImpl;
 	
-	public Optional<Institution> getInstitution(String profile) throws NullPointerException, Exception {
+	public Optional<UberCustomer> getInstitution(String profile) throws NullPointerException, Exception {
 			Map<String, String> uberConfigMap = uberConfigClientImpl.getConfigurations(profile, "uber-chef");
-			Institution institution = 
-					Institution.builder()
+			UberCustomer institution =
+					UberCustomer.builder()
 					.institutionId(profile)
 					.rtn(uberConfigMap.get("rtn"))
 					.build();

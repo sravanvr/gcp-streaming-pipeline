@@ -13,7 +13,7 @@ import io.github.streamingpipeline.exception.UberAccountsPipelineException;
 import io.github.streamingpipeline.model.UberAccount;
 import io.github.streamingpipeline.model.UberAccountDetail;
 import io.github.streamingpipeline.model.ErrorLog;
-import io.github.streamingpipeline.model.Institution;
+import io.github.streamingpipeline.model.UberCustomer;
 import io.github.streamingpipeline.rowkey.UberAccountLookupRowKey;
 import io.github.streamingpipeline.utils.BigtableClientUtil;
 import org.apache.beam.repackaged.core.org.apache.commons.lang3.StringUtils;
@@ -79,7 +79,7 @@ public class UberAccountProcessor {
 			JsonArray array = element.getAsJsonArray();
 			accounts = importManager.jsonArrayToAccount(array);
 
-			Institution institution = importManager.getInstitutionConfig(accounts.get(0));
+			UberCustomer institution = importManager.getInstitutionConfig(accounts.get(0));
 
 			accounts.stream().forEach(accountDetail -> {
 				try {
@@ -101,7 +101,7 @@ public class UberAccountProcessor {
 	}
 
 	private void processAccount(DoFn<String, KV<ByteString, Iterable<Mutation>>>.ProcessContext processContext,
-								UberAccountDetail accountDetail, Institution institution) {
+								UberAccountDetail accountDetail, UberCustomer institution) {
 
 		String messageSourceDetails = logMessageBuilder.getMessageSourceDetails(accountDetail);
 		logger.debug("Input Accounts message : {}", accountDetail.getRecord());
