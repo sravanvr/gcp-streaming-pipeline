@@ -1,0 +1,10 @@
+#Cloud build
+steps:
+  - name: maven:3.6-amazoncorretto-11
+    entrypoint: 'mvn'
+    args: ['-s=settings.xml','-Dusername=${_DBK_ARTIFACTORY_USERNAME}','-Dpassword=${_DBK_ARTIFACTORY_PASSWORD}','clean']
+  - name: maven:3.6-amazoncorretto-11
+    entrypoint: 'mvn'
+    args: ['-s=settings.xml','-Dusername=${_DBK_ARTIFACTORY_USERNAME}','-Dpassword=${_DBK_ARTIFACTORY_PASSWORD}','deploy']
+options:
+    substitution_option: 'ALLOW_LOOSE'  

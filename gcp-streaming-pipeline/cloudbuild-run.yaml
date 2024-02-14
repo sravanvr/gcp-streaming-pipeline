@@ -1,0 +1,108 @@
+#Cloud build
+steps:
+- name: byrnedo/alpine-curl
+  args: ['-u', "${_DBK_ARTIFACTORY_USERNAME}:${_DBK_ARTIFACTORY_PASSWORD}", '-X', 'GET', "${_ARTIFACTORY_URL}", '--output', "${_JARFILE_NAME}"]
+- name: openjdk:11
+  entrypoint: 'java'
+  args:
+    [
+      '-cp',
+      '${_JARFILE_NAME}',
+      '${_MAIN_CLASS_NAME}',
+      '--runner=DataflowRunner',
+      '--project=${_PROJECT_NAME}',
+      '--bigtableProjectId=${_BIGTABLE_PROJECT_ID}',
+      '--tempLocation=gs://${_BUCKET_NAME}/${_TEMP_PATH}',
+      '--stagingLocation=gs://${_BUCKET_NAME}/${_STAGING_PATH}',
+      '--templateLocation=gs://${_BUCKET_NAME}/${_TEMPLATE_PATH}/${_TEMPLATE_NAME}',
+      '--inputTopic=projects/${_PROJECT_NAME}/topics/${_GCP_INPUT_TOPIC}',
+      '--inputSubscription=projects/${_PROJECT_NAME}/subscriptions/${_GCP_SUBSCRIPTION}',
+      '--accountTableId=${_GCP_BIGTABLE_ID}',
+      '--bigtableInstanceId=${_GCP_BIGTABLE_INSTANCE_ID}',
+      '--lookupTableId=${_GCP_LOOKUP_TABLE_ID}',
+      '--customerAccountLookupTableId=${_GCP_CUSTOMER_ACCOUNT_LOOKUP_TABLE_ID}',
+      '--customerLookUpTableId=${_GCP_CUSTOMER_LOOKUP_TABLE_ID}',
+      '--institutionConfigurationUrl=${_INSTITUTION_CONFIGURATION_URL}',
+      '--institutionConfigRequestParameterKey=${_INSTITUTION_PARAMETER_KEY}',
+      #'--serviceAccount=dataflow-executor@dbk-streamdata-global-nonprod.iam.gserviceaccount.com',
+      '--region=${_REGION}'
+      ]
+- name: gcr.io/cloud-builders/gcloud
+  entrypoint: /bin/bash
+  args:
+        - -c
+        - |
+          echo $(gcloud dataflow jobs list \
+          --project=${_PROJECT_NAME} \
+          --filter="state=Running AND name~^${_JOB_ID}" \
+          --format="value(JOB_ID)" --region=${_REGION}) > /workspace/job_id.txt
+- name: gcr.io/cloud-builders/gcloud
+  entrypoint: /bin/bash
+  args:
+        - -c
+        - |
+          JOB_ID="$$(cat /workspace/job_id.txt)"
+          TEMPLATE_NAME=${_TEMPLATE_NAME}
+          JOB_NAME=${_JOB_ID}
+          execute() {
+            gcloud dataflow jobs run $$JOB_NAME \
+              --project=${_PROJECT_NAME} \
+              --gcs-location gs://${_BUCKET_NAME}/${_TEMPLATE_PATH}/${_TEMPLATE_NAME} \
+              --region=${_REGION}
+              #--worker-region=${_WORKER_REGION}
+          }
+          # Call this function repeatedly from poll() until the state of the job swicthes from "draining" to "drained"
+          check_drain_completed() {
+            echo "Polling to check DRAINING status for : $$JOB_ID"
+            echo $(gcloud dataflow jobs list \
+            --project=${_PROJECT_NAME} \
+            --filter="state=Drained AND name~^${_JOB_NAME}" \
+            --format="value(JOB_ID)" --region=${_REGION}) > /workspace/job_drained_id.txt
+          }
+          
+          # Poller - start
+          poll() {                      
+            interval=10            
+            start=1 
+            end=20                       
+            while ((${start} < ${end}))
+            do 
+              start=$(($start+1))
+              echo "LOOP start vaiable increased to  : ${start}" 
+              check_drain_completed
+              id="$$(cat /workspace/job_drained_id.txt)"
+              echo "Main poller - Job-Id captured from drained_id text file : $$id" 
+              if [[ "$$id" != *"$$JOB_ID"* ]]
+              then
+                echo "Main poller - Job is still draining for job-id : $$JOB_ID"
+              else
+                echo "Main poller - Job DRAIN COMPLETE for job-id : $$JOB_ID"
+                break  
+              fi            
+              sleep ${interval}
+            done
+            check_drain_completed
+            id="$$(cat /workspace/job_drained_id.txt)"
+            echo "Post Poller - Job-Id captured from drained_id text file : $$id"
+            if [[ "$$id" == *"$$JOB_ID"* ]]
+            then
+             echo "check_drain_completed -- Job has been drained for job-id : $$JOB_ID"              
+            else
+              echo "Job NEVER DRAINED for job-id : $$id"
+              exit 0
+            fi   
+          }
+          # Poller end
+          
+          # If there are running jobs, drain them, wait until they fully drain, then deploy new job.      
+          if [ ! -z "$$JOB_ID" ]
+          then
+            gcloud dataflow jobs drain $$JOB_ID --region=${_REGION} --project=${_PROJECT_NAME} 
+            poll
+            echo "Polling complete now executing the job for job-id : ${id}"          
+            execute
+          else
+            execute
+          fi     
+options:
+    substitution_option: 'ALLOW_LOOSE'
