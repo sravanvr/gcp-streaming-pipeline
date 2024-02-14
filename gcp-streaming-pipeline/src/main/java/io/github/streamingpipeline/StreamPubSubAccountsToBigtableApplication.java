@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2020 NCR Corporation. This material contains certain trade
- * secrets and confidential and proprietary information of NCR Corporation.
+ * Copyright (C) 2020 SecantLine Blogs. This material contains certain trade
+ * secrets and confidential and proprietary information of SecantLine Blogs.
  * Use, reproduction, disclosure and distribution by any means are prohibited,
- * except pursuant to a written license from NCR Corporation. Use of copyright
+ * except pursuant to a written license from SecantLine Blogs. Use of copyright
  * notice is precautionary and does not imply publication or disclosure.
  */
 
@@ -32,7 +32,7 @@ import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 /**
  * The StreamPubSubAccountsToBigtableApplication pipeline is a streaming
  * pipeline which ingests data in JSon format from Cloud Pub/Sub, converts it to
- * Account NIIS model object, captures key_columns and message body, and outputs
+ * Account Uber model object, captures key_columns and message body, and outputs
  * the resulting records as byte array into BigTable.
  */
 

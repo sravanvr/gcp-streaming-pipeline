@@ -42,10 +42,10 @@ import org.apache.beam.sdk.options.Default;
 		ValueProvider<String> getInputSubscription();
 		void setInputSubscription(ValueProvider<String> value);
 		
-		@Description("Chief URL")
+		@Description("Uber-chef URL")
 		@Default.String("http://localhost/uber-chef")
-		ValueProvider<String> getChiefUrl();
-		void setChiefUrl(ValueProvider<String> value);
+		ValueProvider<String> getUberChefUrl();
+		void setUberChefUrl(ValueProvider<String> value);
 		
 		@Description("Http Connection timeout")
 		@Default.Integer(60000)

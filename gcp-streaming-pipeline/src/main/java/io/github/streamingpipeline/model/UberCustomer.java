@@ -17,7 +17,7 @@ import lombok.*;
 public class UberCustomer {
 
 	@JsonProperty("institutionId")
-	private String institutionId;
+	private String uberCustomerId;
 
 	@JsonProperty("rtn")
 	private String rtn;
@@ -25,6 +25,6 @@ public class UberCustomer {
 	@JsonProperty("cutoffDate")
 	private String cutoffDate;
 
-	@JsonProperty("enableNexus")
-	private String enableNexus;
+	@JsonProperty("enableUberNetwork")
+	private String enableUberNetwork;
 }

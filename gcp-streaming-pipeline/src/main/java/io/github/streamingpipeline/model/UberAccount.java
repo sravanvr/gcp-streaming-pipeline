@@ -15,11 +15,11 @@ import lombok.*;
 public class UberAccount {
     private String Id;
     private String accountId;
-    private String institutionId;
-    private String fileLogId;
-    private String batchLogId;
+    private String uberCustomerId;
+    private String uberFileLogId;
+    private String uberBatchLogId;
     private SeverityLevel severityLevel;
-    private String errorLogId;
+    private String uberErrorLogId;
     private String errorMessage;
     private String recordNum;
 }

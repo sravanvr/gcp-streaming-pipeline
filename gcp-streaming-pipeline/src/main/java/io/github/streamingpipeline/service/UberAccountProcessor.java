@@ -85,7 +85,7 @@ public class UberAccountProcessor {
 				try {
 					// process each account
 					processAccount(processContext, accountDetail, institution);
-					logger.info("ACCOUNT_BLOCK_IMPORT_SUCCESS - Accounts block for Institution {} has been successfully imported", institution.getInstitutionId());
+					logger.info("ACCOUNT_BLOCK_IMPORT_SUCCESS - Accounts block for Institution {} has been successfully imported", institution.getUberCustomerId());
 				} catch (UberAccountsPipelineException ape) {
 					importManager.handleException(ape, accountDetail, errorLogList);
 				} catch (Exception ex) {

@@ -107,7 +107,7 @@ public class HttpClient {
 	                }
 	                HttpHost target = (HttpHost) context.getAttribute(
 	                        HttpClientContext.HTTP_TARGET_HOST);
-	                if (properties.getPipelineOptions().getChiefUrl().get().contains(target.getHostName())) {
+	                if (properties.getPipelineOptions().getUberChefUrl().get().contains(target.getHostName())) {
 	                    // Keep alive for 5 seconds only
 	                    return (long) 5 * 1000;
 	                } else {

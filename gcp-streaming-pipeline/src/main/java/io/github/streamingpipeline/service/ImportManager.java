@@ -50,7 +50,7 @@ public class ImportManager {
 	
 	public String extractInstitutionId(UberAccountDetail accountDetail) {
 		if (ObjectUtils.allNotNull(accountDetail, accountDetail.getRecord())) {
-			return accountDetail.getRecord().getInstitutionId();	
+			return accountDetail.getRecord().getUberCustomerId();
 		} else {
 			return null;
 		}
@@ -155,7 +155,7 @@ public class ImportManager {
 		try {
 			tags = gson.toJson(wrapper.getTags(), Map.class);	
 		} catch (Exception e) {
-			logger.error("Exception while getting tags in Account record for InstitutionId {} and AccountId {}. Continuing with rest of the records in the block. ", wrapper.getRecord().getInstitutionId(), wrapper.getRecord().getAccountId() + e.getMessage());
+			logger.error("Exception while getting tags in Account record for InstitutionId {} and AccountId {}. Continuing with rest of the records in the block. ", wrapper.getRecord().getUberCustomerId(), wrapper.getRecord().getAccountId() + e.getMessage());
 		}
 		if (tags == null) {
 			logger.error("Tags not available in Account record for InstitutionId {} and AccountId {}. Continuing with rest of the records in the block. ");

@@ -71,6 +71,6 @@ public class BigtableUtil {
 	 * 
 	 */
 	public static String buildAccountRowKey(UberAccount account) {
-		return account.getInstitutionId() + "#aid#" + account.getId();
+		return account.getUberCustomerId() + "#aid#" + account.getId();
 	}
 }

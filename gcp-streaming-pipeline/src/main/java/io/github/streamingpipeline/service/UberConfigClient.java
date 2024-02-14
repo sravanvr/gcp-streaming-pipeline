@@ -21,7 +21,7 @@ public class UberConfigClient {
 			Map<String, String> uberConfigMap = uberConfigClientImpl.getConfigurations(profile, "uber-chef");
 			UberCustomer institution =
 					UberCustomer.builder()
-					.institutionId(profile)
+					.uberCustomerId(profile)
 					.rtn(uberConfigMap.get("rtn"))
 					.build();
 			return Optional.ofNullable(institution);

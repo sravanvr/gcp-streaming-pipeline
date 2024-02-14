@@ -40,11 +40,11 @@ public class MetadataClient {
 	@Named ("getGson")
 	com.google.gson.Gson gson;
 
-	final String FILE_LOG_URL = "/importfilelog";
+	final String FILE_LOG_URL = "/uberimportfilelog";
 	final String ERROR_LOG_URL = "/errorlog";
-	final String RUNSTREAM_URL = "/runstreams";
-	final String RUNSTREAM_INSTITUTIONS_URL = "/runstream-institutions/institution";
-	final String TS_INSTITUTIONS_URL = "/ts-institution-config";
+	final String RUNSTREAM_URL = "/raidstreams";
+	final String RUNSTREAM_INSTITUTIONS_URL = "/raidstream-ubercustomer/ubercustomer";
+	final String TS_INSTITUTIONS_URL = "/ubercustomer-config";
 	public static final String HEADER_AUTHORIZATION = "Authorization";
 
 	/**

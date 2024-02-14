@@ -17,6 +17,6 @@ public class UberAccountLookupRowKey {
      * @return
      */
 	public String buildAccountLookupRowKey(UberAccount account, UberCustomer institution) {
-        return account.getInstitutionId() + "#ai#";
+        return account.getUberCustomerId() + "#ai#";
     }
 }

@@ -45,7 +45,7 @@ public class GuiceModule extends AbstractModule {
 		bind(ImportManager.class).in(Scopes.SINGLETON);
 		bind(String.class)
 		.annotatedWith(Names.named("chiefUrl"))
-		.toInstance(applicationProperties.getPipelineOptions().getChiefUrl().get());
+		.toInstance(applicationProperties.getPipelineOptions().getUberChefUrl().get());
 		bind(UberConfigClient.class).in(Scopes.SINGLETON);
 		bind(GCPSecretManager.class).in(Scopes.SINGLETON);
 	}
