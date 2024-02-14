@@ -8,7 +8,7 @@ import io.github.streamingpipeline.utils.SeverityLevel;
  * @author SravanVedala
  *
  */
-public class ApplicationException extends AccountsPipelineException {
+public class ApplicationException extends UberAccountsPipelineException {
   
 	private static final long serialVersionUID = 1L;
 

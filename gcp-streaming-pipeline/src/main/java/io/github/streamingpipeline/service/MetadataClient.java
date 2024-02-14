@@ -3,9 +3,9 @@ package io.github.streamingpipeline.service;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.github.streamingpipeline.model.ErrorLog;
-import io.github.streamingpipeline.model.ImportFileLog;
+import io.github.streamingpipeline.model.UberImportFileLog;
 import io.github.streamingpipeline.model.Institution;
-import io.github.streamingpipeline.model.Runstream;
+import io.github.streamingpipeline.model.UberRideStream;
 import io.github.streamingpipeline.secretmanager.GCPSecretManager;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -50,7 +50,7 @@ public class MetadataClient {
 	/**
 	 * FIleLog repository client functions
 	 */
-	public ImportFileLog getFileLog(UUID fileLogId) {
+	public UberImportFileLog getFileLog(UUID fileLogId) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HEADER_AUTHORIZATION, gcpSecretManager.fetchSecret());
 		HttpEntity request = new HttpEntity(headers);
@@ -58,32 +58,32 @@ public class MetadataClient {
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(ROOT_URL + FILE_LOG_URL)
                 .queryParam("fileLogId", fileLogId);
 
-		ResponseEntity<ImportFileLog> response = restTemplate.exchange(
+		ResponseEntity<UberImportFileLog> response = restTemplate.exchange(
 				uriBuilder.toUriString(),
 				HttpMethod.GET,
 				request,
-				ImportFileLog.class
+				UberImportFileLog.class
 		);
 		return response.getBody();
 	}
 	
-	public void updateFileLog(ImportFileLog fileLog) {
+	public void updateFileLog(UberImportFileLog fileLog) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HEADER_AUTHORIZATION, gcpSecretManager.fetchSecret());
 		HttpEntity request = new HttpEntity(headers);
 
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(ROOT_URL + FILE_LOG_URL);
 
-		HttpEntity<ImportFileLog> requestEntity = new HttpEntity<ImportFileLog>(fileLog, headers);
+		HttpEntity<UberImportFileLog> requestEntity = new HttpEntity<UberImportFileLog>(fileLog, headers);
 
-		HttpEntity<ImportFileLog> response = restTemplate.exchange(
+		HttpEntity<UberImportFileLog> response = restTemplate.exchange(
 				uriBuilder.toUriString(),
 				HttpMethod.PUT,
 				requestEntity,
-				ImportFileLog.class);
+				UberImportFileLog.class);
 	}
 	
-	public void updateFileLog(UUID fileLogId, ImportFileLog fileLog, OffsetDateTime filePostDate, Integer processStatusId) {
+	public void updateFileLog(UUID fileLogId, UberImportFileLog fileLog, OffsetDateTime filePostDate, Integer processStatusId) {
 		Map<String, Object> uriParam = new HashMap<>();
 	    uriParam.put("fileLogId", fileLogId.toString());
 
@@ -91,7 +91,7 @@ public class MetadataClient {
 		headers.set(HEADER_AUTHORIZATION, gcpSecretManager.fetchSecret());
 		HttpEntity request = new HttpEntity(headers);
 
-		HttpEntity<ImportFileLog> requestEntity = new HttpEntity<ImportFileLog>(fileLog, headers);
+		HttpEntity<UberImportFileLog> requestEntity = new HttpEntity<UberImportFileLog>(fileLog, headers);
 
 	    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(ROOT_URL + FILE_LOG_URL + "/{fileLogId}");
 
@@ -102,11 +102,11 @@ public class MetadataClient {
 	            .build()
 	            .toUri();
 
-		HttpEntity<ImportFileLog> response = restTemplate.exchange(
+		HttpEntity<UberImportFileLog> response = restTemplate.exchange(
 				uriComponentsBuilder.toUriString(),
 				HttpMethod.PUT,
 				requestEntity,
-				ImportFileLog.class);
+				UberImportFileLog.class);
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class MetadataClient {
 	 * Run-stream configuration client
 	 */
 	
-	public Runstream getRunstreamConfig(String runstreamId) {
+	public UberRideStream getRunstreamConfig(String runstreamId) {
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(ROOT_URL + RUNSTREAM_URL)
 				.queryParam("runstreamName", runstreamId);
 
@@ -141,11 +141,11 @@ public class MetadataClient {
 		headers.set(HEADER_AUTHORIZATION, gcpSecretManager.fetchSecret());
 		HttpEntity request = new HttpEntity(headers);
 
-		ResponseEntity<Runstream> response = restTemplate.exchange(
+		ResponseEntity<UberRideStream> response = restTemplate.exchange(
 				uriBuilder.toUriString(),
 				HttpMethod.GET,
 				request,
-				Runstream.class
+				UberRideStream.class
 		);
 
 		return response.getBody();

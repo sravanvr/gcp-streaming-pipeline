@@ -5,21 +5,20 @@ import java.util.UUID;
 import lombok.Data;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /***
- * 
+ *
  * @author Sravan Vedala
  *
  */
 @Data
-public class Runstream {	
+public class UberRideStream {
     private UUID runstreamId;
 	private String runstreamName;
-	private String fileDirectoryName;	
-	private String runstreamVersion;	
+	private String fileDirectoryName;
+	private String runstreamVersion;
 	private String processorNumber;
-	private String processorName;	
+	private String processorName;
 	private boolean isEndingWithCrlf;
 	private boolean isFileIncremental;
 	private boolean isIntradaySequenceEnabled;

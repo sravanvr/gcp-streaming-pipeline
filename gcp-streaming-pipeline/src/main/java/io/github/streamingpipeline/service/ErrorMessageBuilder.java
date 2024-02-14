@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
-import io.github.streamingpipeline.exception.AccountsPipelineException;
+import io.github.streamingpipeline.exception.UberAccountsPipelineException;
 import io.github.streamingpipeline.model.UberAccountDetail;
 import io.github.streamingpipeline.utils.ErrorCode;
 import io.github.streamingpipeline.utils.MessageTags;
@@ -26,7 +26,7 @@ public class ErrorMessageBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(ErrorMessageBuilder.class);
 
 	// Build detailed error message from a given exception so that it can be used for logging into Log4J log.
-	public String getErrorMessage(AccountsPipelineException ape, UberAccountDetail accountDetail) {
+	public String getErrorMessage(UberAccountsPipelineException ape, UberAccountDetail accountDetail) {
 		return (buildErrorMessage(null, ape, ape.getMessage(), ape.getCause(), ape.getCode(), accountDetail));
 	}
 	

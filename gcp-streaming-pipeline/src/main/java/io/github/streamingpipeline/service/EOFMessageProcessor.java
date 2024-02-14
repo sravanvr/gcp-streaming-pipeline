@@ -9,7 +9,7 @@ import com.google.inject.name.Named;
 import com.google.protobuf.ByteString;
 import io.github.streamingpipeline.TxnstBigtableOptions;
 import io.github.streamingpipeline.exception.ApplicationException;
-import io.github.streamingpipeline.exception.AccountsPipelineException;
+import io.github.streamingpipeline.exception.UberAccountsPipelineException;
 import io.github.streamingpipeline.model.EOFMessage;
 import io.github.streamingpipeline.model.ErrorLog;
 import io.github.streamingpipeline.utils.BigtableClientUtil;
@@ -54,12 +54,12 @@ public class EOFMessageProcessor {
     /**
      * EOF Process Function
      * @param processContext ProcessContext
-     * @throws AccountsPipelineException a runtime exception type
+     * @throws UberAccountsPipelineException a runtime exception type
      */
     public void processEOF(
             DoFn<String, KV<ByteString, Iterable<Mutation>>>.ProcessContext processContext,
             TxnstBigtableOptions options
-    ) throws AccountsPipelineException {
+    ) throws UberAccountsPipelineException {
         List<ErrorLog> errorLogList = new ArrayList<>();
 
         var pubsubMessage = processContext.element();

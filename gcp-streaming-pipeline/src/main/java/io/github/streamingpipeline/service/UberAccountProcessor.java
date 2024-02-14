@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.google.protobuf.ByteString;
 import io.github.streamingpipeline.config.ApplicationProperties;
-import io.github.streamingpipeline.exception.AccountsPipelineException;
+import io.github.streamingpipeline.exception.UberAccountsPipelineException;
 import io.github.streamingpipeline.model.UberAccount;
 import io.github.streamingpipeline.model.UberAccountDetail;
 import io.github.streamingpipeline.model.ErrorLog;
@@ -64,9 +64,9 @@ public class UberAccountProcessor {
 	/**
 	 * Main Process Function
 	 * @param processContext
-	 * @throws AccountsPipelineException
+	 * @throws UberAccountsPipelineException
 	 */
-	public void process(DoFn<String, KV<ByteString, Iterable<Mutation>>>.ProcessContext processContext) throws AccountsPipelineException {	
+	public void process(DoFn<String, KV<ByteString, Iterable<Mutation>>>.ProcessContext processContext) throws UberAccountsPipelineException {
 		
 		List<ErrorLog> errorLogList = new ArrayList<ErrorLog>();		
 		String pubsubMessage = processContext.element();
@@ -86,7 +86,7 @@ public class UberAccountProcessor {
 					// process each account
 					processAccount(processContext, accountDetail, institution);
 					logger.info("ACCOUNT_BLOCK_IMPORT_SUCCESS - Accounts block for Institution {} has been successfully imported", institution.getInstitutionId());
-				} catch (AccountsPipelineException ape) {
+				} catch (UberAccountsPipelineException ape) {
 					importManager.handleException(ape, accountDetail, errorLogList);
 				} catch (Exception ex) {
 					importManager.handleException(ex, accountDetail, errorLogList);

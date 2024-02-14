@@ -3,7 +3,7 @@ package io.github.streamingpipeline.service;
 import com.google.gson.*;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import io.github.streamingpipeline.exception.AccountsPipelineException;
+import io.github.streamingpipeline.exception.UberAccountsPipelineException;
 import io.github.streamingpipeline.exception.ApplicationException;
 import io.github.streamingpipeline.model.UberAccountDetail;
 import io.github.streamingpipeline.model.EOFMessage;
@@ -56,11 +56,11 @@ public class ImportManager {
 		}
 	}
 	
-	public String getInstitutionId(UberAccountDetail accountDetail) throws AccountsPipelineException {
+	public String getInstitutionId(UberAccountDetail accountDetail) throws UberAccountsPipelineException {
 		String institutionId = extractInstitutionId(accountDetail);
 		if (StringUtils.isBlank(institutionId)) {			
 			String errorMessage = errorMessageBuilder.getErrorMessage("InstitutionId is missing in Accounts pubsub message. Message not processed.", null, accountDetail);
-			throw new AccountsPipelineException(errorMessage, ErrorCode.MESSAGE_VALIDATION_FAILED);
+			throw new UberAccountsPipelineException(errorMessage, ErrorCode.MESSAGE_VALIDATION_FAILED);
 		}
 		return institutionId;
 	}
@@ -80,22 +80,22 @@ public class ImportManager {
 	
 	/**
 	 * @return Institution configuration
-	 * @throws AccountsPipelineException
+	 * @throws UberAccountsPipelineException
 	 */
-	public Institution getInstitutionConfig(UberAccountDetail accountDetail) throws AccountsPipelineException {
+	public Institution getInstitutionConfig(UberAccountDetail accountDetail) throws UberAccountsPipelineException {
 		String institutionId = getInstitutionId(accountDetail);
 		Optional<Institution> institution = Optional.empty();
 		try {
 			institution = uberConfigsClient.getInstitution(institutionId);
 		} catch (NullPointerException npe) {
-			throw new AccountsPipelineException("Institution configuration is not available for institutionId= \"" + institutionId + "\"", ErrorCode.INVALID_CONFIGURATION);
+			throw new UberAccountsPipelineException("Institution configuration is not available for institutionId= \"" + institutionId + "\"", ErrorCode.INVALID_CONFIGURATION);
 		} catch (ApplicationException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new AccountsPipelineException("Exception while getting Institution configuration for institutionId= \"" + institutionId + "\"", e, ErrorCode.INVALID_CONFIGURATION);
+			throw new UberAccountsPipelineException("Exception while getting Institution configuration for institutionId= \"" + institutionId + "\"", e, ErrorCode.INVALID_CONFIGURATION);
 		}
 		if (!institution.isPresent()) {
-			throw new AccountsPipelineException("Institution configuration is not available for institutionId= \"" + institutionId + "\"", ErrorCode.INVALID_CONFIGURATION);
+			throw new UberAccountsPipelineException("Institution configuration is not available for institutionId= \"" + institutionId + "\"", ErrorCode.INVALID_CONFIGURATION);
 		}
 		return institution.get();
 	}
@@ -104,26 +104,26 @@ public class ImportManager {
 	 * 
 	 * @param pubSubMessage
 	 * @return JsonElement representation of pubSubMessage 
-	 * @throws AccountsPipelineException
+	 * @throws UberAccountsPipelineException
 	 */
-	public JsonElement validatePubSubMessage(String pubSubMessage) throws AccountsPipelineException {		
+	public JsonElement validatePubSubMessage(String pubSubMessage) throws UberAccountsPipelineException {
 		logger.debug("Accounts message block pulled into pipeline: {}", pubSubMessage);		
 		if (StringUtils.isBlank(pubSubMessage)) {			
-			throw new AccountsPipelineException("EMPTY_PUB_SUB_MESSAGE: Accounts pubsub message is empty. Message not processed.", ErrorCode.MESSAGE_VALIDATION_FAILED);
+			throw new UberAccountsPipelineException("EMPTY_PUB_SUB_MESSAGE: Accounts pubsub message is empty. Message not processed.", ErrorCode.MESSAGE_VALIDATION_FAILED);
 		}		
 		JsonElement element = null;
 		try {
 			Gson gsn=getGson();
 			element = gsn.fromJson(pubSubMessage, JsonElement.class);
 		} catch (Exception e) {
-			throw new AccountsPipelineException("INVALID_JSON: Pubsub Accounts message is not a valid Json object. Message not processed.", e, ErrorCode.MESSAGE_VALIDATION_FAILED);
+			throw new UberAccountsPipelineException("INVALID_JSON: Pubsub Accounts message is not a valid Json object. Message not processed.", e, ErrorCode.MESSAGE_VALIDATION_FAILED);
 		}
 		if (! element.isJsonArray()) {				
-			throw new AccountsPipelineException("NOT_A_JSON_ARRAY: Accounts pubsub message is not a JSon Array. Pubsub message must be a Json array in order to be processed by Save pipelines. Message not processed.", ErrorCode.MESSAGE_VALIDATION_FAILED);
+			throw new UberAccountsPipelineException("NOT_A_JSON_ARRAY: Accounts pubsub message is not a JSon Array. Pubsub message must be a Json array in order to be processed by Save pipelines. Message not processed.", ErrorCode.MESSAGE_VALIDATION_FAILED);
 		}
 		JsonArray pubSub = element.getAsJsonArray();
 		if (pubSub.size() <= 0) {
-			throw new AccountsPipelineException("EMPTY_JSON_ARRAY: Accounts pubsub message is an empty JSon Array. Message not processed.", ErrorCode.MESSAGE_VALIDATION_FAILED);
+			throw new UberAccountsPipelineException("EMPTY_JSON_ARRAY: Accounts pubsub message is an empty JSon Array. Message not processed.", ErrorCode.MESSAGE_VALIDATION_FAILED);
 		}
 		return element;
 	}
@@ -140,12 +140,12 @@ public class ImportManager {
     				logger.error("INVALID_MESSAGE : Invalid message identified while converting JSon array to Accounts array. It could be due to message being empty or missing message tags - Json Element: {}", element);
     			}
 			} catch (Exception ex) {
-				throw new AccountsPipelineException("JSON_TO_ACCOUNT_CONVERSION_FAILED: Failed to deserialize pubsub JSon block to list of Uber model objects of type Account. Message not processed. Failed Message: " + element, ex, ErrorCode.MESSAGE_VALIDATION_FAILED);
+				throw new UberAccountsPipelineException("JSON_TO_ACCOUNT_CONVERSION_FAILED: Failed to deserialize pubsub JSon block to list of Uber model objects of type Account. Message not processed. Failed Message: " + element, ex, ErrorCode.MESSAGE_VALIDATION_FAILED);
 			}
 		}
 
 		if (s.isEmpty()) {
-			throw new AccountsPipelineException("INVALID_MESSAGE: Invalid message identified while converting JSon array to Accounts array. Accounts array is empty.", ErrorCode.MESSAGE_VALIDATION_FAILED);
+			throw new UberAccountsPipelineException("INVALID_MESSAGE: Invalid message identified while converting JSon array to Accounts array. Accounts array is empty.", ErrorCode.MESSAGE_VALIDATION_FAILED);
 		}
 		return s;
 	}
@@ -169,8 +169,8 @@ public class ImportManager {
 		if (ObjectUtils.isNotEmpty(accounts)) {
 			handleException(e, accounts.get(0), errorLogList);
 		}  else {
-			if (e instanceof AccountsPipelineException) {
-				errorMessage = errorMessageBuilder.buildErrorMessage(e.getMessage(), e.getCause(), ((AccountsPipelineException) e).getCode(), pubsubMessage);
+			if (e instanceof UberAccountsPipelineException) {
+				errorMessage = errorMessageBuilder.buildErrorMessage(e.getMessage(), e.getCause(), ((UberAccountsPipelineException) e).getCode(), pubsubMessage);
 				logger.error("AccountPipeline Error - " + errorMessage);
 			} else {
 				errorMessage = errorMessageBuilder.buildErrorMessage(e.getMessage(), e.getCause(), ErrorCode.RUNTIME_EXCEPTION, pubsubMessage);
@@ -182,8 +182,8 @@ public class ImportManager {
 	// Central Exception Handler
 	public void handleException(Exception e, UberAccountDetail accountDetail, List<ErrorLog> errorLogList) {
 		String errorMessage = null;		
-		if (e instanceof AccountsPipelineException) {
-			errorMessage = errorMessageBuilder.getErrorMessage((AccountsPipelineException) e, accountDetail);	
+		if (e instanceof UberAccountsPipelineException) {
+			errorMessage = errorMessageBuilder.getErrorMessage((UberAccountsPipelineException) e, accountDetail);
 		} else {
 			errorMessage = errorMessageBuilder.getErrorMessage(e, accountDetail);
 		}
@@ -247,7 +247,7 @@ public class ImportManager {
 			}
 			return eofMessage;
 		} catch (Exception e) {
-			throw new AccountsPipelineException("INVALID_JSON: Pubsub Accounts EOF message is not a valid Json object. Message not processed.",
+			throw new UberAccountsPipelineException("INVALID_JSON: Pubsub Accounts EOF message is not a valid Json object. Message not processed.",
 					e, ErrorCode.MESSAGE_VALIDATION_FAILED);
 		}
 	}

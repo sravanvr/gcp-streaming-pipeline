@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @SuppressWarnings("serial")
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class RecordNotFoundException extends AccountsPipelineException {
+public class RecordNotFoundException extends UberAccountsPipelineException {
 	
     public RecordNotFoundException(UUID id) {
         super("Could not find metadata record for " + id);

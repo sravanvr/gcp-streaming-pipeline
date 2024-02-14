@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter 
 @Setter
 @Builder
-public class ImportFileLog {
+public class UberImportFileLog {
 	private UUID fileLogId;
 	private Integer dataTypeId;
 	
