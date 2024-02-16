@@ -14,17 +14,17 @@ import org.apache.beam.sdk.options.Default;
  public interface TxnstBigtableOptions extends DataflowPipelineOptions, PipelineOptions   {
 
 		@Description("Google Cloud Bigtable instance ID.")
-		@Default.String("dbk-ts-bt-instance-dev")
+		@Default.String("streamingpipeline-instance-dev")
 		ValueProvider<String> getBigtableInstanceId();
 		void setBigtableInstanceId(ValueProvider<String> bigtableInstanceId);
 
 		@Description("Cloud Bigtable table ID for Accounts.")
-		@Default.String("dbk-ts-bt-accounts-dev")
+		@Default.String("streamingpipeline-bt-accounts-dev")
 		ValueProvider<String> getAccountTableId();
 		void setAccountTableId(ValueProvider<String> accountTableId);
 		
 		@Description("Cloud Bigtable table ID for Account-lookup.")
-		@Default.String("dbk-account-lookup")
+		@Default.String("streamingpipeline-lookup")
 		ValueProvider<String> getLookupTableId();
 		void setLookupTableId(ValueProvider<String> lookupTableId);
 
